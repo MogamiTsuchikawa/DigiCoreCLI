@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Net;
 
-namespace DigiCoreLib
+namespace DigiCoreCLI
 {
     public class DigiCore
     {
@@ -15,7 +15,7 @@ namespace DigiCoreLib
             Auth = new(baseUrl);
         }
         public string GetFullUrl(string path) 
-            => _baseUrl + path;
+            => _baseUrl + "/api" + path;
     }
     public class Response<T>
     {
@@ -45,12 +45,17 @@ namespace DigiCoreLib
             where T : AppData
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", "JWT " + _digiCore.Auth.jwt);
-            var httpRes = await httpClient.GetAsync(apiPath);
+            var httpRes = await httpClient.GetAsync(_digiCore.GetFullUrl(apiPath));
             if(httpRes.StatusCode != HttpStatusCode.OK)
             {
                 return new Response<T>(httpRes.StatusCode);
             }
             var json = await httpRes.Content.ReadAsStringAsync();
+            if (json[0] == '[')
+            {
+                List<T>? datas = JsonSerializer.Deserialize<List<T>>(json);
+                return new Response<T>(httpRes.StatusCode) { data = datas[0] };
+            }
             T? data = JsonSerializer.Deserialize<T>(json);
             return new Response<T>(httpRes.StatusCode) { data = data };
         }

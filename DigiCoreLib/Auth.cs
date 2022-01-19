@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json;
 using System.Net;
-namespace DigiCoreLib
+namespace DigiCoreCLI
 {
     public class Auth
     {

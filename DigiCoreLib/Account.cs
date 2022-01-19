@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-namespace DigiCoreLib
+namespace DigiCoreCLI
 {
     public class Account : AppBase
     {
